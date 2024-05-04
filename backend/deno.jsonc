@@ -4,8 +4,8 @@
 	},
 	"imports": {
 		"hono/": "https://deno.land/x/hono@v4.2.2/",
+		"jsonwebtoken": "https://esm.sh/jsonwebtoken@9.0.2",
 		"mongoose": "npm:mongoose",
-		"jsonwebtoken": "npm:jsonwebtoken",
 		"cors": "npm:cors",
 		"zod": "npm:zod"
 	},

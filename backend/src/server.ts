@@ -1,5 +1,5 @@
 import { Hono } from "hono/mod.ts";
-import { cors, jwt } from "hono/middleware.ts";
+import { cors } from "hono/middleware.ts";
 import { connect } from "mongoose";
 import { task_routes } from "./task/routes.ts";
 import { user_routes } from "./user/routes.ts";
