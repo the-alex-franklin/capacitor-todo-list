@@ -1,7 +1,8 @@
 import { Hono } from "hono/mod.ts";
 import { cors, jwt } from "hono/middleware.ts";
 import { connect } from "mongoose";
-import { task_router } from "./task/router.ts";
+import { task_routes } from "./task/routes.ts";
+import { user_routes } from "./user/routes.ts";
 
 const app = new Hono();
 
@@ -13,9 +14,8 @@ connect("mongodb://localhost:27017/todoApp")
 
 app.get("/", (c) => c.text("Hello from backend!"));
 
-// app.use("/auth/*", jwt({ secret: "super-secret" })); // SET THIS UP LATER
-
-app.route("/tasks", task_router);
+app.route("/", user_routes);
+app.route("/tasks", task_routes);
 
 app.all("*", (c) => c.body(null, 404));
 

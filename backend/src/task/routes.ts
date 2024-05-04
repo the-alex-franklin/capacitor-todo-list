@@ -1,4 +1,6 @@
-import { Context, Hono, Next } from "hono/mod.ts";
+import { Hono } from "hono/mod.ts";
+import type { Context, Next } from "hono/mod.ts";
+
 import { Task } from "./model.ts";
 import { Try } from "../utils/functions/try.ts";
 import { z } from "zod";
@@ -15,7 +17,7 @@ type KV = {
 	};
 };
 
-const task_router = new Hono<KV>();
+const task_routes = new Hono<KV>();
 
 const bodyValidatorMiddleware = async (c: Context<KV>, next: Next) => {
 	const body = await c.req.json();
@@ -26,13 +28,13 @@ const bodyValidatorMiddleware = async (c: Context<KV>, next: Next) => {
 	await next();
 };
 
-task_router.get("/", async (c) => {
+task_routes.get("/", async (c) => {
 	const result = await Try(() => Task.find().exec());
 	if (!result.success) return c.json({ message: result.error.message }, 500);
 	return c.json(result.data);
 });
 
-task_router.get("/:id", async (c) => {
+task_routes.get("/:id", async (c) => {
 	const id = c.req.param("id");
 	const task = await Try(() => Task.findById(id).exec());
 
@@ -41,7 +43,7 @@ task_router.get("/:id", async (c) => {
 	return c.json(task.data);
 });
 
-task_router.post("/", bodyValidatorMiddleware, async (c) => {
+task_routes.post("/", bodyValidatorMiddleware, async (c) => {
 	const body = c.get("body");
 	const new_task = await Try(() => new Task(body).save());
 
@@ -49,7 +51,7 @@ task_router.post("/", bodyValidatorMiddleware, async (c) => {
 	return c.json(new_task.data);
 });
 
-task_router.patch("/:id", bodyValidatorMiddleware, async (c) => {
+task_routes.patch("/:id", bodyValidatorMiddleware, async (c) => {
 	const id = c.req.param("id");
 	const body = c.get("body");
 	const patched_task = await Try(() => Task.findByIdAndUpdate(id, body, { new: true }).exec());
@@ -59,7 +61,7 @@ task_router.patch("/:id", bodyValidatorMiddleware, async (c) => {
 	return c.json(patched_task.data);
 });
 
-task_router.delete("/:id", async (c) => {
+task_routes.delete("/:id", async (c) => {
 	const id = c.req.param("id");
 	const deleted_task = await Try(() => Task.findByIdAndDelete(id).exec());
 
@@ -68,4 +70,4 @@ task_router.delete("/:id", async (c) => {
 	return c.json({ message: "Task deleted successfully" });
 });
 
-export { task_router };
+export { task_routes };
