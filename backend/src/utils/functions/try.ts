@@ -1,3 +1,5 @@
+// deno-fmt-ignore-file
+
 type Success<T> = {
 	success: true;
 	failure: false;
@@ -10,7 +12,7 @@ type Failure = {
 	error: Error;
 };
 
-type Either<F extends Failure, S extends Success<unknown>> = F | S;
+type Either<F extends Failure, S extends Success<any>> = F | S;
 
 function createSuccess<T>(data: T): Success<T> {
 	return { success: true, failure: false, data };
@@ -23,9 +25,7 @@ function createFailure(error: unknown): Failure {
 
 export function Try<T>(fn: () => Promise<T>): Promise<Either<Failure, Success<T>>>;
 export function Try<T>(fn: () => T): Either<Failure, Success<T>>;
-export function Try<T>(
-	fn: (() => T) | (() => Promise<T>),
-): Either<Failure, Success<T>> | Promise<Either<Failure, Success<T>>> {
+export function Try<T>(fn: (() => T) | (() => Promise<T>)): Either<Failure, Success<T>> | Promise<Either<Failure, Success<T>>> {
 	try {
 		const result = fn();
 		if (result instanceof Promise) {
