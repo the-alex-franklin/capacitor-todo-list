@@ -1,7 +1,7 @@
 import type { Context, Next } from "hono/mod.ts";
 import { z } from "zod";
 import jwt from "jsonwebtoken";
-import { Try } from "../../utils/functions/try.ts";
+import { Try } from "../utils/functions/try.ts";
 
 const jwt_payload_schema = z.object({
 	user_id: z.string().min(1),
@@ -13,7 +13,7 @@ export type AuthenticationKV = {
 	Variables: JwtPayload;
 };
 
-export const authenticationValidator = async (c: Context<AuthenticationKV>, next: Next) => {
+export const authenticationMiddleware = async (c: Context<AuthenticationKV>, next: Next) => {
 	const authHeader = c.req.header("Authorization");
 	if (!authHeader) return c.json({ message: "Unauthorized" }, 401);
 

@@ -1,4 +1,4 @@
-import type { ValueOf } from "./utils/functions/types/ValueOf.ts";
+import type { ValueOf } from "./utils/types/ValueOf.ts";
 
 export const EnvVars = {
 	ACCESS_TOKEN_SECRET: "ACCESS_TOKEN_SECRET",

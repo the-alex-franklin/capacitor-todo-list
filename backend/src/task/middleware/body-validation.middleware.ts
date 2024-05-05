@@ -6,11 +6,11 @@ const body_validator = z.object({
 	value: z.string().trim().min(1),
 });
 
-type Body = z.infer<typeof body_validator>;
-
 export type BodyValidationKV = {
 	Variables: {
-		body: Body;
+		body: {
+			value: string;
+		};
 	};
 };
 

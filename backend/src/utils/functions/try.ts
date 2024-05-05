@@ -10,7 +10,7 @@ type Failure = {
 	error: Error;
 };
 
-type Either<T extends Success<unknown>, U extends Failure = Failure> = T | U;
+type Either<F extends Failure, S extends Success<unknown>> = F | S;
 
 function createSuccess<T>(data: T): Success<T> {
 	return { success: true, failure: false, data };
@@ -21,9 +21,11 @@ function createFailure(error: unknown): Failure {
 	return { success: false, failure: true, error: new Error(JSON.stringify(error)) };
 }
 
-export function Try<T>(fn: () => Promise<T>): Promise<Either<Success<T>>>;
-export function Try<T>(fn: () => T): Either<Success<T>>;
-export function Try<T>(fn: (() => T) | (() => Promise<T>)): Either<Success<T>> | Promise<Either<Success<T>>> {
+export function Try<T>(fn: () => Promise<T>): Promise<Either<Failure, Success<T>>>;
+export function Try<T>(fn: () => T): Either<Failure, Success<T>>;
+export function Try<T>(
+	fn: (() => T) | (() => Promise<T>),
+): Either<Failure, Success<T>> | Promise<Either<Failure, Success<T>>> {
 	try {
 		const result = fn();
 		if (result instanceof Promise) {

@@ -3,7 +3,7 @@
 		"start": "deno run -A --watch --inspect-wait src/server.ts"
 	},
 	"imports": {
-		"hono/": "https://deno.land/x/hono@v4.2.2/",
+		"hono/": "https://deno.land/x/hono@v4.3.1/",
 		"jsonwebtoken": "https://esm.sh/jsonwebtoken@9.0.2",
 		"mongoose": "npm:mongoose",
 		"cors": "npm:cors",
