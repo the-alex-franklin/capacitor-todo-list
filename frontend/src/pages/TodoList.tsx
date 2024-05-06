@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react';
 import axios from 'axios';
 import { z } from 'zod';
+import { API_URL } from '../env.ts';
 
 const task_schema = z.object({
   _id: z.string(),
@@ -9,8 +10,6 @@ const task_schema = z.object({
 });
 
 type Task = z.infer<typeof task_schema>;
-
-const API_URL = import.meta.env.VITE_API_URL;
 
 const getTasks = async () => {
   const access_token = localStorage.getItem('todo-list-access-token');

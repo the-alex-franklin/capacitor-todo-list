@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import { signup_validator } from '../validators/signup.validator.ts';
 import { setLoginState } from '../redux/authReducer.ts';
 import { useDispatch } from 'react-redux';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_URL } from '../env.ts';
 
 export const AuthForm: React.FC = () => {
   const dispatch = useDispatch();

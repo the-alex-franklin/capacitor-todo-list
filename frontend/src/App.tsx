@@ -9,8 +9,7 @@ import { delay } from './utils/functions/delay.ts';
 import { clampZero } from './utils/functions/clampZero.ts';
 import axios from 'axios';
 import "virtual:windi.css";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { API_URL } from './env.ts';
 
 export const App = () => {
   const [loading, setLoading] = useState(true);
