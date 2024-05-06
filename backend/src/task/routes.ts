@@ -2,6 +2,7 @@ import { Hono } from "hono/mod.ts";
 import { Task } from "./model.ts";
 import { Try } from "../utils/functions/try.ts";
 import { bodyValidationMiddleware } from "./middleware/body-validation.middleware.ts";
+import { patchValidationMiddleware } from "./middleware/patch-validation.middleware.ts";
 import type { AuthenticationKV } from "../middleware/authentication.middleware.ts";
 
 const task_routes = new Hono<AuthenticationKV>();
@@ -32,13 +33,11 @@ task_routes.post("/", bodyValidationMiddleware, async (c) => {
 	return c.json(new_task.data);
 });
 
-task_routes.patch("/:id", bodyValidationMiddleware, async (c) => {
+task_routes.patch("/:id", patchValidationMiddleware, async (c) => {
 	const user_id = c.get("user_id");
 	const _id = c.req.param("id");
 	const body = c.get("body");
-	const patched_task = await Try(() => (
-		Task.findOneAndUpdate({ _id, user_id }, body, { new: true }).exec()
-	));
+	const patched_task = await Try(() => Task.findOneAndUpdate({ _id, user_id }, body, { new: true }).exec());
 
 	if (!patched_task.success) return c.json({ message: patched_task.error.message }, 500);
 	if (!patched_task.data) return c.json({ message: "Task not found" }, 404);

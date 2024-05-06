@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
+import * as bcrypt from "bcrypt";
 
 type User = {
 	username: string;
@@ -10,7 +10,15 @@ type User = {
 const UserSchema = new Schema<User>({
 	username: { type: String, required: true, unique: true },
 	password: { type: String, required: true, select: false },
-}, { timestamps: true });
+}, {
+	timestamps: true,
+	toJSON: {
+		transform: (doc, ret) => {
+			delete ret.password;
+			return ret;
+		},
+	},
+});
 
 UserSchema.pre("save", async function (next) {
 	if (!this.isModified("password")) return next();
@@ -21,8 +29,8 @@ UserSchema.pre("save", async function (next) {
 });
 
 UserSchema.methods.comparePassword = async function (password: string): Promise<boolean> {
-	const user = await User.findOne({ username: this.username }).select("+password").exec();
-	if (!user) return false;
+	const user = await User.findOne({ _id: this._id }).select("+password").exec();
+	if (!user) throw new Error("User not found");
 
 	return bcrypt.compareSync(password, user.password);
 };

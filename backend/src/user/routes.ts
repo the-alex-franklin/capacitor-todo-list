@@ -14,7 +14,17 @@ user_routes.post("/signup", usernamePasswordValidator, async (c: Context<Usernam
 
 	const result = await Try(() => User.create({ username, password }));
 	if (result.failure) return c.json({ message: result.error.message }, 500);
-	return c.json(result.data);
+	const user = result.data;
+
+	const token_gen_result = Try(() => {
+		const access_token = jwt.sign({ user_id: user._id }, "super-secret-key", { expiresIn: "1h" });
+		const refresh_token = jwt.sign({ user_id: user._id }, "super-secret-key", { expiresIn: "7d" });
+		return [access_token, refresh_token];
+	});
+	if (token_gen_result.failure) return c.json({ message: token_gen_result.error.message }, 500);
+	const [access_token, refresh_token] = token_gen_result.data;
+
+	return c.json({ access_token, refresh_token });
 });
 
 user_routes.post("/login", usernamePasswordValidator, async (c: Context<UsernamePasswordKV>) => {
